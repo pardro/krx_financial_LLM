@@ -3,6 +3,7 @@ from torch.utils.data import Dataset, DataLoader
 from transformers import AutoTokenizer
 from sklearn.model_selection import train_test_split
 from huggingface_hub import login
+from datasets import load_dataset
 from tqdm import tqdm
 
 class CustomDataset(Dataset):
@@ -55,6 +56,17 @@ class CustomDataset(Dataset):
 
     def get_max_token_length(self):
         return max(self.input_token_len)
+
+def data_download(
+    file_name_lst
+):
+    folder_name = "data"
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
+    for file_name in file_name_lst:
+        dataset = load_dataset("T-EVEN/krx_final_dataset", data_files=file_name)
+        save_to_jsonl('data/{}'.format(file_name), dataset['train'])
+        print('File Name: "{}"  download done'.format(file_name))
 
 def load_from_jsonl(
     filename
